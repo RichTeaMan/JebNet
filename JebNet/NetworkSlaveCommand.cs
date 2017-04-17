@@ -1,9 +1,11 @@
-﻿using System;
+﻿using JebNet.Domain.Mapper;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using UnityEngine;
 
 namespace JebNet
 {
@@ -18,6 +20,11 @@ namespace JebNet
         /// Server to get control messages.
         /// </summary>
         private Server server;
+
+        /// <summary>
+        /// Vessel mapper.
+        /// </summary>
+        private VesselMapper vesselMapper = new VesselMapper();
 
         /// <summary>
         /// Called once when the part is active in the game (ie, started on the launchpad).
@@ -74,15 +81,20 @@ namespace JebNet
         /// </summary>
         public void Update()
         {
-
+            
             Context context = server.FetchContext();
             if (null != context)
             {
                 log("Update: processing context.");
                 HttpListenerResponse response = context.HttpListenerResponse;
+
+                var domainVessel = vesselMapper.Map(vessel);
+
+                var serialisedVessel = JsonUtility.ToJson(domainVessel);
+
                 // Construct a response.
-                string responseString = string.Format("<HTML><BODY> Hello world at {0}!</BODY></HTML>", DateTime.Now);
-                byte[] buffer = Encoding.UTF8.GetBytes(responseString);
+                //string responseString = string.Format("<HTML><BODY> Hello world at {0}!</BODY></HTML>", DateTime.Now);
+                byte[] buffer = Encoding.UTF8.GetBytes(serialisedVessel);
                 // Get a response stream and write the response to it.
                 response.ContentLength64 = buffer.Length;
                 System.IO.Stream output = response.OutputStream;
