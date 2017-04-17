@@ -14,35 +14,10 @@ namespace JebNet
         /// </summary>
         private const int NETWORK_PORT = 2001;
 
-        private object requestStackLock = new object();
-
-        private Stack<Context> requestStack = new Stack<Context>();
-
         /// <summary>
-        /// The HTTP listener.
+        /// Server to get control messages.
         /// </summary>
-        public HttpListener HttpListener { get; private set; }
-
-        public void AddContext(Context context)
-        {
-            lock (requestStackLock)
-            {
-                requestStack.Push(context);
-            }
-        }
-
-        public Context FetchContext()
-        {
-            Context context = null;
-            lock (requestStackLock)
-            {
-                if (requestStack.Count > 0)
-                {
-                    context = requestStack.Pop();
-                }
-            }
-            return context;
-        }
+        private Server server;
 
         /// <summary>
         /// Called once when the part is active in the game (ie, started on the launchpad).
@@ -55,11 +30,8 @@ namespace JebNet
             try
             {
                 log("Attempting to start server.");
-                HttpListener = new HttpListener();
-                HttpListener.Prefixes.Add(string.Format("http://localhost:{0}/", NETWORK_PORT));
-                HttpListener.Start();
-                HttpListener.BeginGetContext(new AsyncCallback(ListenerCallback), this);
-
+                server = new Server(NETWORK_PORT);
+                server.Start();
 
                 log("Server started.");
 
@@ -77,9 +49,9 @@ namespace JebNet
         public void OnDestroy()
         {
             log("Network slave command on destroy.");
-            if (null != HttpListener)
+            if (null != server)
             {
-                HttpListener.Stop();
+                server.Stop();
             }
         }
 
@@ -97,49 +69,13 @@ namespace JebNet
 
         }
 
-        public static void ListenerCallback(IAsyncResult result)
-        {
-            log("Begin listener callback.");
-            NetworkSlaveCommand networkSlaveCommand = (NetworkSlaveCommand)result.AsyncState;
-            HttpListener listener = networkSlaveCommand.HttpListener;
-            try
-            {
-                // Call EndGetContext to complete the asynchronous operation.
-                HttpListenerContext httpListenerContext = listener.EndGetContext(result);
-                HttpListenerRequest request = httpListenerContext.Request;
-
-                // Obtain a response object.
-                HttpListenerResponse response = httpListenerContext.Response;
-
-                string body = null;
-                using (StreamReader reader = new StreamReader(request.InputStream))
-                {
-                    body = reader.ReadToEnd();
-                }
-
-                ContextRequest contextRequest = new ContextRequest(request.HttpMethod, body, request.RawUrl);
-
-                Context context = new Context();
-                context.RequestContext = contextRequest;
-                context.HttpListenerResponse = response;
-
-                networkSlaveCommand.AddContext(context);
-            }
-            finally
-            {
-                listener.BeginGetContext(new AsyncCallback(ListenerCallback), networkSlaveCommand);
-            }
-            log("Complete listener callback.");
-
-        }
-
         /// <summary>
         /// Called frequently during play (every tick?).
         /// </summary>
         public void Update()
         {
 
-            Context context = FetchContext();
+            Context context = server.FetchContext();
             if (null != context)
             {
                 log("Update: processing context.");
