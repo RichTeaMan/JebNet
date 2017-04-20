@@ -93,11 +93,10 @@ namespace JebNet
                 var serialisedVessel = JsonUtility.ToJson(domainVessel);
 
                 // Construct a response.
-                //string responseString = string.Format("<HTML><BODY> Hello world at {0}!</BODY></HTML>", DateTime.Now);
                 byte[] buffer = Encoding.UTF8.GetBytes(serialisedVessel);
                 // Get a response stream and write the response to it.
                 response.ContentLength64 = buffer.Length;
-                System.IO.Stream output = response.OutputStream;
+                Stream output = response.OutputStream;
                 output.Write(buffer, 0, buffer.Length);
                 // You must close the output stream.
                 output.Close();
