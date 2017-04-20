@@ -87,7 +87,6 @@ namespace JebNet
             {
                 log("Update: processing context.");
                 HttpListenerResponse response = context.HttpListenerResponse;
-
                 var domainVessel = vesselMapper.Map(vessel);
 
                 var serialisedVessel = JsonUtility.ToJson(domainVessel);

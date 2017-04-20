@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace JebNet
+namespace JebNet.Domain
 {
     [Serializable]
     public class Vessel
@@ -49,6 +49,8 @@ namespace JebNet
         public string VesselName;
 
         public string SituationString;
+
+        public ControlState ControlState;
 
     }
 }

@@ -46,5 +46,7 @@ namespace JebNet.Controller.Domain
 
         public string SituationString{ get; set; }
 
+        public ControlState ControlState { get; set; }
+
     }
 }

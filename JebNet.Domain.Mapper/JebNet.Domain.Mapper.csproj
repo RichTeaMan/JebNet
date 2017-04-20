@@ -45,6 +45,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ControlStateMapper.cs" />
     <Compile Include="VectorMapper.cs" />
     <Compile Include="VesselMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
