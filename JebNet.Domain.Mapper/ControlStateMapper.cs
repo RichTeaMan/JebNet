@@ -14,23 +14,23 @@ namespace JebNet.Domain.Mapper
             {
                 domainControlState = new ControlState();
 
-                domainControlState.GearDown = true;
-                domainControlState.GearUp = true;
-                domainControlState.HeadLight = true;
-                domainControlState.MainThrottle = 0;
-                domainControlState.Pitch = 0;
-                domainControlState.PitchTrim = 0;
-                domainControlState.Roll = 0;
-                domainControlState.RollTrim = 0;
-                domainControlState.WheelSteer = 0;
-                domainControlState.WheelSteerTrim = 0;
-                domainControlState.WheelThrottle = 0;
-                domainControlState.WheelThrottleTrim = 0;
-                domainControlState.X = 0;
-                domainControlState.Y = 0;
-                domainControlState.Yaw = 0;
-                domainControlState.YawTrim = 0;
-                domainControlState.Z = 0;
+                domainControlState.GearDown = flightControlState.gearDown;
+                domainControlState.GearUp = flightControlState.gearUp;
+                domainControlState.HeadLight = flightControlState.headlight;
+                domainControlState.MainThrottle = flightControlState.mainThrottle;
+                domainControlState.Pitch = flightControlState.pitch;
+                domainControlState.PitchTrim = flightControlState.pitchTrim;
+                domainControlState.Roll = flightControlState.roll;
+                domainControlState.RollTrim = flightControlState.rollTrim;
+                domainControlState.WheelSteer = flightControlState.wheelSteer;
+                domainControlState.WheelSteerTrim = flightControlState.wheelSteerTrim;
+                domainControlState.WheelThrottle = flightControlState.wheelThrottle;
+                domainControlState.WheelThrottleTrim = flightControlState.wheelThrottleTrim;
+                domainControlState.X = flightControlState.X;
+                domainControlState.Y = flightControlState.Y;
+                domainControlState.Yaw = flightControlState.yaw;
+                domainControlState.YawTrim = flightControlState.yawTrim;
+                domainControlState.Z = flightControlState.Z;
             }
             return domainControlState;
         }

@@ -1,4 +1,5 @@
 ﻿using JebNet.Domain.Mapper;
+using KSP.UI.Screens;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -89,7 +90,11 @@ namespace JebNet
                 HttpListenerResponse response = context.HttpListenerResponse;
                 var domainVessel = vesselMapper.Map(vessel);
 
-                var serialisedVessel = JsonUtility.ToJson(domainVessel);
+
+                StageManager.ActivateNextStage();
+
+
+                 var serialisedVessel = JsonUtility.ToJson(domainVessel);
 
                 // Construct a response.
                 byte[] buffer = Encoding.UTF8.GetBytes(serialisedVessel);

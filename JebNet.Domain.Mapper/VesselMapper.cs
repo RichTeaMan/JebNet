@@ -9,6 +9,8 @@ namespace JebNet.Domain.Mapper
     {
         private VectorMapper vectorMapper = new VectorMapper();
 
+        private ControlStateMapper controlStateMapper = new ControlStateMapper();
+
 
         public Vessel Map(global::Vessel vessel)
         {
@@ -55,6 +57,8 @@ namespace JebNet.Domain.Mapper
             domainVessel.VesselName = vessel.vesselName;
 
             domainVessel.SituationString = vessel.SituationString;
+
+            domainVessel.ControlState = controlStateMapper.Map(vessel.ctrlState);
 
             return domainVessel;
         }

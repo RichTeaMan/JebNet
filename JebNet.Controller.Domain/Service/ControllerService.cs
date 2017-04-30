@@ -17,5 +17,12 @@ namespace JebNet.Controller.Domain.Service
             Vessel vessel = integrationService.Retrieve<Vessel>(endpoint);
             return vessel;
         }
+
+        public Vessel SendVessel(Vessel vessel)
+        {
+            string endpoint = Constants.SERVER_URL + Constants.STATUS_ENDPOINT;
+            Vessel responseVessel = integrationService.Send<Vessel>(endpoint, vessel);
+            return responseVessel;
+        }
     }
 }
