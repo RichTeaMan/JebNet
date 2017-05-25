@@ -40,21 +40,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Context.cs" />
+    <Compile Include="Domain\ControlState.cs" />
+    <Compile Include="Domain\Mapper\ControlStateMapper.cs" />
+    <Compile Include="Domain\Mapper\VectorMapper.cs" />
+    <Compile Include="Domain\Mapper\VesselMapper.cs" />
+    <Compile Include="Domain\Vector.cs" />
+    <Compile Include="Domain\Vessel.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="NetworkSlaveCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ContextRequest.cs" />
     <Compile Include="Service\VesselControlService.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\JebNet.Domain.Mapper\JebNet.Domain.Mapper.csproj">
-      <Project>{6330048a-42d7-428c-9df0-be2dfb7a346e}</Project>
-      <Name>JebNet.Domain.Mapper</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\JebNet.Domain\JebNet.Domain.csproj">
-      <Project>{854ff3ab-5c4c-4e85-95c0-c3a9b1471c65}</Project>
-      <Name>JebNet.Domain</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -50,7 +50,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\JebNet.Controller.Domain\JebNet.Controller.csproj">
+    <ProjectReference Include="..\JebNet.Controller\JebNet.Controller.csproj">
       <Project>{e534b435-5cff-4611-9719-94e52940f5c2}</Project>
       <Name>JebNet.Controller</Name>
     </ProjectReference>

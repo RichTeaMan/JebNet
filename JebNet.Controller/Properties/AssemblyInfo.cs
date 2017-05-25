@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("JebNet.Controller")]
+[assembly: AssemblyTitle("JebNet.Controller.Domain")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("JebNet.Controller")]
+[assembly: AssemblyProduct("JebNet.Controller.Domain")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("96d32cb7-6e6c-4dd7-9bfa-881fe67cff02")]
+[assembly: Guid("e534b435-5cff-4611-9719-94e52940f5c2")]
 
 // Version information for an assembly consists of the following four values:
 //
