@@ -1,6 +1,10 @@
 ﻿using JebNet.Domain.Mapper;
 using JebNet.Server.Service;
 using KSP.UI.Screens;
+using log4net;
+using log4net.Appender;
+using log4net.Config;
+using log4net.Layout;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,10 +17,21 @@ namespace JebNet.Server
 {
     public class NetworkSlaveCommand : PartModule
     {
+
+        /// <summary>
+        /// Logger.
+        /// </summary>
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.Ge‌​tCurrentMethod().Dec‌​laringType);
+
         /// <summary>
         /// Port the vessel is listening on.
         /// </summary>
         private const int NETWORK_PORT = 2001;
+
+        /// <summary>
+        /// Log 4 net config file name.
+        /// </summary>
+        private const string Log4NetConfigFileName = "Log4Net.xml";
 
         /// <summary>
         /// Server to get control messages.
@@ -33,28 +48,56 @@ namespace JebNet.Server
         /// </summary>
         private VesselControlService vesselControlService = new VesselControlService();
 
+        static NetworkSlaveCommand() {
+            var log4netXmlPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Log4NetConfigFileName);
+
+
+            var patternLayout = new PatternLayout
+            {
+                ConversionPattern = "%date %-5level %logger - %message%newline"
+            };
+            patternLayout.ActivateOptions();
+
+            // setup the appender that writes to Log\EventLog.txt
+            var fileAppender = new RollingFileAppender
+            {
+                AppendToFile = true,
+                File = @"jebnet.log",
+                Layout = patternLayout,
+                MaxSizeRollBackups = 5,
+                MaximumFileSize = "10MB",
+                RollingStyle = RollingFileAppender.RollingMode.Size,
+                StaticLogFileName = true
+            };
+            fileAppender.ActivateOptions();
+            
+
+            BasicConfigurator.Configure(fileAppender);
+
+
+           // XmlConfigurator.Configure(new FileInfo(log4netXmlPath));
+        }
+
         /// <summary>
         /// Called once when the part is active in the game (ie, started on the launchpad).
         /// </summary>
         public override void OnStart(StartState state)
         {
 
-            log("Network slave command module on start. State is '{0}'.", state);
+            log.DebugFormat("Network slave command module on start. State is '{0}'.", state);
 
             try
             {
-                log("Attempting to start server.");
+                log.Debug("Attempting to start server.");
                 server = new Server(NETWORK_PORT);
                 server.Start();
 
-                log("Server started.");
+                log.Debug("Server started.");
 
             }
             catch (Exception ex)
             {
-                log("Failed to start server.");
-                log(ex.Message);
-                log(ex.StackTrace);
+                log.Debug("Failed to start server.", ex);
             }
 
             base.OnStart(state);
@@ -62,7 +105,7 @@ namespace JebNet.Server
 
         public void OnDestroy()
         {
-            log("Network slave command on destroy.");
+            log.Debug("Network slave command on destroy.");
             if (null != server)
             {
                 server.Stop();
@@ -71,13 +114,13 @@ namespace JebNet.Server
 
         public override void OnActive()
         {
-            log("Network slave command module on active");
+            log.Debug("Network slave command module on active");
             base.OnActive();
         }
 
         public override void OnFixedUpdate()
         {
-            log("Network slave command module on fixed update");
+            log.Debug("Network slave command module on fixed update");
 
             base.OnFixedUpdate();
 
@@ -98,14 +141,14 @@ namespace JebNet.Server
 
                     try
                     {
-                        log("Update: processing context.");
+                        log.Debug("Update: processing context.");
                         if (context.RequestContext.Method == "POST")
                         {
-                            log("POST recieved");
+                            log.Debug("POST recieved");
                             var requestVessel = JsonUtility.FromJson<Domain.Vessel>(context.RequestContext.Body);
-                            log("Map complete.");
+                            log.Debug("Map complete.");
                             vesselControlService.TransformVessel(requestVessel, vessel);
-                            log("Transform complete.");
+                            log.Debug("Transform complete.");
                         }
 
 
@@ -120,13 +163,11 @@ namespace JebNet.Server
 
                         output.Write(buffer, 0, buffer.Length);
 
-                        log("Update: processing context complete.");
+                        log.Debug("Update: processing context complete.");
                     }
                     catch (Exception ex)
                     {
-                        log("Exception caught.");
-                        log(ex.Message);
-                        log(ex.StackTrace);
+                        log.Debug("Exception caught.", ex);
                         byte[] buffer = Encoding.UTF8.GetBytes(ex.Message);
                         response.ContentLength64 = buffer.Length;
                         response.StatusCode = 500;
@@ -140,18 +181,6 @@ namespace JebNet.Server
         public override void OnInactive()
         {
             base.OnInactive();
-        }
-
-        private static void log(string message, params object[] args)
-        {
-            string resolvedMessage = string.Format(message, args);
-
-            string datedResolvedMessage = string.Format("[{0}] - {1}", DateTime.Now, resolvedMessage);
-
-            using (StreamWriter file = new StreamWriter(@"D:\Games\Steam\SteamApps\common\Kerbal Space Program\KSP_Data\Plugins\log.txt", true))
-            {
-                file.WriteLine(datedResolvedMessage);
-            }
         }
 
     }
