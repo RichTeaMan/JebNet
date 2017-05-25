@@ -1,4 +1,5 @@
 ﻿using JebNet.Domain.Mapper;
+using JebNet.Server.Service;
 using KSP.UI.Screens;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Net;
 using System.Text;
 using UnityEngine;
 
-namespace JebNet
+namespace JebNet.Server
 {
     public class NetworkSlaveCommand : PartModule
     {
@@ -26,6 +27,11 @@ namespace JebNet
         /// Vessel mapper.
         /// </summary>
         private VesselMapper vesselMapper = new VesselMapper();
+
+        /// <summary>
+        /// Vessel service.
+        /// </summary>
+        private VesselControlService vesselControlService = new VesselControlService();
 
         /// <summary>
         /// Called once when the part is active in the game (ie, started on the launchpad).
@@ -86,28 +92,49 @@ namespace JebNet
             Context context = server.FetchContext();
             if (null != context)
             {
-                log("Update: processing context.");
-                HttpListenerResponse response = context.HttpListenerResponse;
-                var domainVessel = vesselMapper.Map(vessel);
+                using (HttpListenerResponse response = context.HttpListenerResponse)
+                using (Stream output = response.OutputStream)
+                {
+
+                    try
+                    {
+                        log("Update: processing context.");
+                        if (context.RequestContext.Method == "POST")
+                        {
+                            log("POST recieved");
+                            var requestVessel = JsonUtility.FromJson<Domain.Vessel>(context.RequestContext.Body);
+                            log("Map complete.");
+                            vesselControlService.TransformVessel(requestVessel, vessel);
+                            log("Transform complete.");
+                        }
 
 
-                StageManager.ActivateNextStage();
+                        var domainVessel = vesselMapper.Map(vessel);
 
+                        var serialisedVessel = JsonUtility.ToJson(domainVessel);
 
-                 var serialisedVessel = JsonUtility.ToJson(domainVessel);
+                        // Construct a response.
+                        byte[] buffer = Encoding.UTF8.GetBytes(serialisedVessel);
+                        response.ContentLength64 = buffer.Length;
+                        response.StatusCode = 200;
 
-                // Construct a response.
-                byte[] buffer = Encoding.UTF8.GetBytes(serialisedVessel);
-                // Get a response stream and write the response to it.
-                response.ContentLength64 = buffer.Length;
-                Stream output = response.OutputStream;
-                output.Write(buffer, 0, buffer.Length);
-                // You must close the output stream.
-                output.Close();
-                response.Close();
-                log("Update: processing context complete.");
+                        output.Write(buffer, 0, buffer.Length);
+
+                        log("Update: processing context complete.");
+                    }
+                    catch (Exception ex)
+                    {
+                        log("Exception caught.");
+                        log(ex.Message);
+                        log(ex.StackTrace);
+                        byte[] buffer = Encoding.UTF8.GetBytes(ex.Message);
+                        response.ContentLength64 = buffer.Length;
+                        response.StatusCode = 500;
+
+                        output.Write(buffer, 0, buffer.Length);
+                    }
+                }
             }
-
         }
 
         public override void OnInactive()

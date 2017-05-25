@@ -5,7 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 
-namespace JebNet
+namespace JebNet.Server
 {
     /// <summary>
     /// Lightweight server that batches contexts.
