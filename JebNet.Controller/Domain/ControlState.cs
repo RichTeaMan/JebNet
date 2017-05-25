@@ -24,6 +24,46 @@ namespace JebNet.Controller.Domain
         public float Yaw { get; set; }
         public float YawTrim { get; set; }
         public float Z { get; set; }
+        public int CurrentStage { get; set; }
+
+        public ControlState()
+        {
+
+        }
+
+        /// <summary>
+        /// Clones a control state.
+        /// </summary>
+        /// <param name="controlState"></param>
+        public ControlState(ControlState controlState)
+        {
+            GearDown = controlState.GearDown;
+            GearUp = controlState.GearUp;
+            HeadLight = controlState.HeadLight;
+            MainThrottle = controlState.MainThrottle;
+            Pitch = controlState.Pitch;
+            PitchTrim = controlState.PitchTrim;
+            Roll = controlState.Roll;
+            RollTrim = controlState.RollTrim;
+            WheelSteer = controlState.WheelSteer;
+            WheelSteerTrim = controlState.WheelSteerTrim;
+            WheelThrottle = controlState.WheelThrottle;
+            WheelThrottleTrim = controlState.WheelThrottleTrim;
+            X = controlState.X;
+            Y = controlState.Y;
+            Yaw = controlState.Yaw;
+            YawTrim = controlState.YawTrim;
+            Z = controlState.Z;
+            CurrentStage = controlState.CurrentStage;
+        }
+
+        /// <summary>
+        /// Stages the vessel.
+        /// </summary>
+        public void StageVessel()
+        {
+            CurrentStage++;
+        }
 
     }
 }

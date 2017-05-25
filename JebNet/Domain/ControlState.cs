@@ -25,6 +25,7 @@ namespace JebNet.Domain
         public float Yaw;
         public float YawTrim;
         public float Z;
-        
+        public int CurrentStage;
+
     }
 }

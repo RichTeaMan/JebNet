@@ -41,10 +41,7 @@
   <ItemGroup>
     <Compile Include="Context.cs" />
     <Compile Include="Domain\ControlState.cs" />
-    <Compile Include="Domain\Mapper\ControlStateMapper.cs" />
-    <Compile Include="Domain\Mapper\VectorMapper.cs" />
     <Compile Include="Domain\Mapper\VesselMapper.cs" />
-    <Compile Include="Domain\Vector.cs" />
     <Compile Include="Domain\Vessel.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="NetworkSlaveCommand.cs" />

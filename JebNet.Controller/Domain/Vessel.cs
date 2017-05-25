@@ -48,13 +48,5 @@ namespace JebNet.Controller.Domain
 
         public ControlState ControlState { get; set; }
 
-        /// <summary>
-        /// Stages the vessel.
-        /// </summary>
-        public void StageVessel()
-        {
-            CurrentStage++;
-        }
-
     }
 }

@@ -50,7 +50,6 @@
     <Compile Include="Domain\Mapper\VectorMapper.cs" />
     <Compile Include="Domain\Mapper\VesselMapper.cs" />
     <Compile Include="Integration\Domain\ControlState.cs" />
-    <Compile Include="Integration\Domain\Vector.cs" />
     <Compile Include="Integration\Domain\Vessel.cs" />
     <Compile Include="Integration\IntegrationService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

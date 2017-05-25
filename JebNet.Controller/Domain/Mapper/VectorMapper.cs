@@ -7,30 +7,14 @@ namespace JebNet.Controller.Domain.Mapper
 {
     public class VectorMapper
     {
-        public Vector MapToDomain(JebNet.Controller.Integration.Domain.Vector vector)
+        public Vector MapToDomain(double x, double y, double z)
         {
-            Vector domainVector = null;
-            if (null != vector)
-            {
-                domainVector = new Vector();
-                domainVector.x = vector.x;
-                domainVector.y = vector.y;
-                domainVector.z = vector.z;
-            }
+            Vector domainVector = new Vector();
+                domainVector.x = x;
+                domainVector.y = y;
+                domainVector.z = z;
             return domainVector;
         }
-
-        public JebNet.Controller.Integration.Domain.Vector MapToIntegration(Vector vector)
-        {
-            JebNet.Controller.Integration.Domain.Vector integrationVector = null;
-            if (null != vector)
-            {
-                integrationVector = new JebNet.Controller.Integration.Domain.Vector();
-                integrationVector.x = vector.x;
-                integrationVector.y = vector.y;
-                integrationVector.z = vector.z;
-            }
-            return integrationVector;
-        }
+        
     }
 }

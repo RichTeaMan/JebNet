@@ -18,6 +18,9 @@ namespace JebNet.Server.Service
             {
                 StageManager.ActivateNextStage();
             }
+
+            vessel.ctrlState.mainThrottle = domainVessel.ControlState_MainThrottle;
+            
         }
     }
 }

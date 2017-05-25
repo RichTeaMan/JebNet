@@ -18,9 +18,12 @@ namespace JebNet.Controller.Cli
             Console.ReadLine();
 
             Vessel vessel = controllerService.FetchVesselStatus();
-            vessel.StageVessel();
+
+            var controlState = new ControlState(vessel.ControlState);
+            controlState.MainThrottle = 0.3f;
+            controlState.StageVessel();
             
-            controllerService.SendVessel(vessel);
+            controllerService.SendVessel(controlState);
 
             Console.WriteLine("Vehicle launched.");
             Console.ReadLine();

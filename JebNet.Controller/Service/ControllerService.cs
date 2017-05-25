@@ -14,6 +14,8 @@ namespace JebNet.Controller.Domain.Service
 
         private VesselMapper vesselMapper = new VesselMapper();
 
+        private ControlStateMapper controlStateMapper = new ControlStateMapper();
+
         public Vessel FetchVesselStatus()
         {
             string endpoint = Constants.SERVER_URL + Constants.STATUS_ENDPOINT;
@@ -22,11 +24,11 @@ namespace JebNet.Controller.Domain.Service
             return responseVessel;
         }
 
-        public Vessel SendVessel(Vessel vessel)
+        public Vessel SendVessel(ControlState controlState)
         {
             string endpoint = Constants.SERVER_URL + Constants.STATUS_ENDPOINT;
-            var integrationVessel = vesselMapper.MapToIntegration(vessel);
-            var integrationResponseVessel = integrationService.Send<JebNet.Controller.Integration.Domain.Vessel>(endpoint, integrationVessel);
+            var integrationControlState = controlStateMapper.MapToIntegration(controlState);
+            var integrationResponseVessel = integrationService.Send<JebNet.Controller.Integration.Domain.Vessel>(endpoint, integrationControlState);
             var responseVessel = vesselMapper.MapToDomain(integrationResponseVessel);
             return responseVessel;
         }
