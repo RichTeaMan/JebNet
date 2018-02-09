@@ -20,7 +20,7 @@ The project should now build.
 
 ## Installing
 
-First, the editted command module needs to be added to the parts directory. The entire (directory)[https://github.com/RichTeaMan/JebNet/tree/master/JebNet/probeCoreOcto2NetworkSlave] needs to be copied.
+First, the editted command module needs to be added to the parts directory. The entire [directory](https://github.com/RichTeaMan/JebNet/tree/master/JebNet/probeCoreOcto2NetworkSlave) needs to be copied.
 
 Secondly, the DLLs built earlier from the JebNet project needs to be copied to the KSP bin directory.
 
