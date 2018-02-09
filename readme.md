@@ -13,8 +13,8 @@ To build the mod you will need Visual Studio Community (other editions should wo
 Clone this repository and build in Visual Studio. It is likely references to Assembly-CSharp.dll and UnityEngine.dll will need to be updated depending on where KSP is installed.
 To do this, right click on the References section in the Visual Studio solution explorer and point to the DLLs that will have a file path similar to the following locations:
 
-* <SteamDirectory>\SteamApps\common\Kerbal Space Program\KSP_Data\Managed\Assembly-CSharp.dll
-* <SteamDirectory>\SteamApps\common\Kerbal Space Program\KSP_Data\Managed\UnityEngine.dll
+* {SteamDirectory}\SteamApps\common\Kerbal Space Program\KSP_Data\Managed\Assembly-CSharp.dll
+* {SteamDirectory}\SteamApps\common\Kerbal Space Program\KSP_Data\Managed\UnityEngine.dll
 
 The project should now build.
 
@@ -30,19 +30,19 @@ That should be it. Restart KSP and you should see the new part in the KSP catalo
 
 When the module is added and the craft is in a playable state (such as on the launch pad) it should respond to API calls. Currently there are two endpoints, 'status' and  'command'.
 
-Status is GET endpoint and can be accessed at 'http://localhost:2001/status'. This will return a JSON object of the current flight parameters. This object is defined by the (Vessel)[https://github.com/RichTeaMan/JebNet/blob/master/JebNet.Controller/Integration/Domain/Vessel.cs] class.
+Status is GET endpoint and can be accessed at 'http://localhost:2001/status'. This will return a JSON object of the current flight parameters. This object is defined by the [Vessel](https://github.com/RichTeaMan/JebNet/blob/master/JebNet.Controller/Integration/Domain/Vessel.cs) class.
 
 Command is POST endpoint and it affects the control of the craft. It can be accessed at 'http://localhost:2001/commmand'. The contents of the POST should be a JSON object conforming to the definition
-of the (ControlState)[https://github.com/RichTeaMan/JebNet/blob/master/JebNet.Controller/Integration/Domain/ControlState.cs] class. The server will then respond with a Vessel object, exactly the same as the status endpoint.
+of the [ControlState](https://github.com/RichTeaMan/JebNet/blob/master/JebNet.Controller/Integration/Domain/ControlState.cs) class. The server will then respond with a Vessel object, exactly the same as the status endpoint.
 
 ## Next Steps
 
-The mod is in very early steps. Currently, when the command module is destroyed in game (this will happen a lot) the server also is also disposed, so any API clients are left to timeout. Ideally there would be a singleton server that can handle many crafts. This will require a bit more investment in learning how the Unity engine creates long running services.
+The mod is in very early stages. Currently, when the command module is destroyed in game (this will happen a lot) the server also is also disposed, so any API clients are left to timeout. Ideally there would be a singleton server that can handle many crafts. This will require a bit more investment in learning how the Unity engine creates long running services.
 
 Additonally, some of the finer points of control vectors need to be worked out. This is mostly a trial and error thing as very little of this is documented.
 
 ## Useful to know
 
-Note that Unity is a cross platform technology that doesn't run .NET as most Windows programmers would know. Instead, it uses (Mono)[http://www.mono-project.com/]. The main difference is the standard library isn't entirely implemented and many Nuget dependencies (eg, Json.NET) won't work. Be careful when selecting dependencies.
+Note that Unity is a cross platform technology that doesn't run .NET as most Windows programmers would know. Instead, it uses [Mono](http://www.mono-project.com/). The main difference is the standard library isn't entirely implemented and many Nuget dependencies (eg, Json.NET) won't work. Be careful when selecting dependencies.
 
 The default Unity JSON serialiser does not support members (only public fields) or nested objects. Other serialisers don't work for the aformentioned compatibility reasons.
