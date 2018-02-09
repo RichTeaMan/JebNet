@@ -47,6 +47,6 @@ Additionally, some of the finer points of control vectors need to be worked out.
 
 ## Useful to know
 
-Note that Unity is a cross platform technology that doesn't run .NET as most Windows programmers would know. Instead, it uses [Mono](http://www.mono-project.com/). The main difference is the standard library isn't entirely implemented and many Nuget libraries (eg, Json.NET) won't work. Be careful when selecting dependencies.
+Note that Unity is a cross platform technology that doesn't run .NET as most Windows programmers would know. Instead, it uses [Mono](http://www.mono-project.com/). It is for this reason the server project is locked into .NET 3.5. The main difference is the standard library isn't entirely implemented and many Nuget libraries (eg, Json.NET) won't work. Be careful when selecting dependencies.
 
 The default Unity JSON serialiser does not support members (only public fields) or nested objects. Other serialisers don't work for the aforementioned compatibility reasons.

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2026
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JebNet", "JebNet\JebNet.csproj", "{F281028C-D121-4389-88A8-88086250812F}"
 EndProject
@@ -14,6 +14,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JebNet.Controller.Cli", "JebNet.Controller.Cli\JebNet.Controller.Cli.csproj", "{83C3D55C-C8CF-4103-B501-B87D6B5F813A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JetNet.Controller.Utilities", "JetNet.Controller.Utilities\JetNet.Controller.Utilities.csproj", "{5C473740-BDB3-435D-BE82-3A1DA4E3160D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E44E238E-1029-4B4C-A0C7-942A7EF2F336}"
+	ProjectSection(SolutionItems) = preProject
+		readme.md = readme.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -46,5 +51,8 @@ Global
 		{E534B435-5CFF-4611-9719-94E52940F5C2} = {FA1FC7F2-8409-4CF4-B2BB-90BD935B48A5}
 		{83C3D55C-C8CF-4103-B501-B87D6B5F813A} = {FA1FC7F2-8409-4CF4-B2BB-90BD935B48A5}
 		{5C473740-BDB3-435D-BE82-3A1DA4E3160D} = {FA1FC7F2-8409-4CF4-B2BB-90BD935B48A5}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0C69CBFB-8347-4CC7-853D-B45671086964}
 	EndGlobalSection
 EndGlobal
