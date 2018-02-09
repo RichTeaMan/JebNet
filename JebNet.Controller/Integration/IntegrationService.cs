@@ -68,6 +68,9 @@ namespace JebNet.Controller.Domain.Integration
         {
             string responseString = Send(url, data);
             T response = JsonConvert.DeserializeObject<T>(responseString);
+
+            List<string> test = new List<string>();
+
             return response;
         }
     }

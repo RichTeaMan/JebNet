@@ -1,6 +1,5 @@
 ﻿using JebNet.Domain;
 using JebNet.Domain.Mapper;
-using JebNet.Server.Service;
 using KSP.UI.Screens;
 using System;
 using System.Collections.Generic;
@@ -28,11 +27,6 @@ namespace JebNet.Server
         /// Vessel mapper.
         /// </summary>
         private VesselMapper vesselMapper = new VesselMapper();
-
-        /// <summary>
-        /// Vessel service.
-        /// </summary>
-        private VesselControlService vesselControlService = new VesselControlService();
 
         /// <summary>
         /// Control state from the network connection.

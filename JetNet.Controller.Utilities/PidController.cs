@@ -49,9 +49,14 @@ namespace JetNet.Controller.Utilities
         public double control(double desiredValue, double measuredValue, int durationMilliseconds)
         {
             double error = desiredValue - measuredValue;
-            Integral = Clamp(Integral + (Ki * error * durationMilliseconds));
-            double derivative = (error - PreviousError) / (double)durationMilliseconds;
-            double output = (Kp * error) + Integral + (Kd * derivative);
+            Integral = Integral + (error * durationMilliseconds);
+            ClampIntegral();
+            double derivative = 0;
+            if (durationMilliseconds > 0)
+            {
+                derivative = (error - PreviousError) / (double)durationMilliseconds;
+            }
+            double output = (Kp * error) + (Ki * Integral) + (Kd * derivative);
             PreviousError = error;
 
             output = Math.Max(MinOutput, output);
@@ -60,11 +65,11 @@ namespace JetNet.Controller.Utilities
             return output;
         }
 
-        private double Clamp(double value)
+        private void ClampIntegral()
         {
-           double output = Math.Max(MinOutput, value);
-            output = Math.Min(MaxOutput, output);
-            return output;
+
+            Integral = Math.Min(1.0 / Ki, Math.Max(-1.0 / Ki, Integral));
+
         }
 
     }
