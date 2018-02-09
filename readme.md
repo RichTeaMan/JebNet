@@ -32,6 +32,8 @@ That should be it. Restart KSP and you should see the new part in the KSP catalo
 
 ## Testing
 
+A JebNet log (JebNetLog.txt) is produced next to the KSP executable (typically in {SteamDirectory}/SteamApps/common/Kerbal Space Program). The presence of this file should indicate that the mod has successfully launched.
+
 When the module is added and the craft is in a playable state (such as on the launch pad) it should respond to API calls. Currently there are two endpoints, 'status' and  'command'.
 
 Status is GET endpoint and can be accessed at 'http://localhost:2001/status'. This will return a JSON object of the current flight parameters. This object is defined by the [Vessel](https://github.com/RichTeaMan/JebNet/blob/master/JebNet.Controller/Integration/Domain/Vessel.cs) class.

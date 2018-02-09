@@ -171,7 +171,7 @@ namespace JebNet.Server
 
             string datedResolvedMessage = string.Format("[{0}] - {1}", DateTime.Now, resolvedMessage);
 
-            using (StreamWriter file = new StreamWriter(@"D:\Games\Steam\SteamApps\common\Kerbal Space Program\KSP_Data\Plugins\log.txt", true))
+            using (StreamWriter file = new StreamWriter(@"JebNetLog.txt", true))
             {
                 file.WriteLine(datedResolvedMessage);
             }
