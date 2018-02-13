@@ -39,6 +39,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CentralServer.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="Domain\ControlState.cs" />
     <Compile Include="Domain\Mapper\VesselMapper.cs" />
