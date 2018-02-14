@@ -1,0 +1,5 @@
+Dependencies from the KSP installation should be placed here either manually or with the build script.
+
+This folder should contain:
+* Assembly-CSharp.dll
+* UnityEngine.dll
