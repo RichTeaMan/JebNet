@@ -7,7 +7,7 @@
     <ProjectGuid>{F281028C-D121-4389-88A8-88086250812F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>JebNet</RootNamespace>
+    <RootNamespace>JebNet.Server</RootNamespace>
     <AssemblyName>JebNet</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -46,6 +46,8 @@
     <Compile Include="Domain\ControlState.cs" />
     <Compile Include="Domain\Mapper\VesselMapper.cs" />
     <Compile Include="Domain\Vessel.cs" />
+    <Compile Include="Domain\VesselIdentity.cs" />
+    <Compile Include="JsonHelper.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="NetworkSlaveCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

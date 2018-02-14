@@ -19,7 +19,7 @@ namespace JebNet.Server
 
         private object requestStackLock = new object();
 
-        private Stack<Context> requestStack = new Stack<Context>();
+        public LinkedList<Context> RequestLinkedList { get; private set; } = new LinkedList<Context>();
 
         /// <summary>
         /// The HTTP listener.
@@ -83,7 +83,7 @@ namespace JebNet.Server
         {
             lock (requestStackLock)
             {
-                requestStack.Push(context);
+                RequestLinkedList.AddLast(context);
             }
         }
 
@@ -95,14 +95,16 @@ namespace JebNet.Server
         /// Returns null if there are no contexts in the stack.
         /// </summary>
         /// <returns></returns>
+        [Obsolete]
         public Context FetchContext()
         {
             Context context = null;
             lock (requestStackLock)
             {
-                if (requestStack.Count > 0)
+                if (RequestLinkedList.Count > 0)
                 {
-                    context = requestStack.Pop();
+                    context = RequestLinkedList.First.Value;
+                    RequestLinkedList.RemoveFirst();
                 }
             }
             return context;
@@ -116,7 +118,7 @@ namespace JebNet.Server
         {
             lock (requestStackLock)
             {
-                return requestStack.Count;
+                return RequestLinkedList.Count;
             }
         }
 

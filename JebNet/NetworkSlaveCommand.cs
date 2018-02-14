@@ -14,7 +14,7 @@ namespace JebNet.Server
     public class NetworkSlaveCommand : PartModule
     {
 
-        public string CraftId { get; private set; }
+        public VesselIdentity VesselIdentity { get; private set; }
 
         /// <summary>
         /// Vessel mapper.
@@ -36,7 +36,12 @@ namespace JebNet.Server
 
             try
             {
-                CraftId = Guid.NewGuid().ToString();
+                VesselIdentity = new VesselIdentity
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = vessel.name
+                };
+                CentralServer.AddVesselIdentity(VesselIdentity);
 
                 log("Attaching fly by wire callback.");
 
@@ -63,6 +68,7 @@ namespace JebNet.Server
             {
                 vessel.OnFlyByWire -= new FlightInputCallback(OnFlyByWire);
             }
+            CentralServer.RemoveVesselIdentity(VesselIdentity);
 
             log("Completed unattaching fly by wire callback.");
         }
@@ -86,10 +92,11 @@ namespace JebNet.Server
         /// </summary>
         public void Update()
         {
-            
-            Context context = CentralServer.Server.FetchContext();
+
+            Context context = CentralServer.Server.RequestLinkedList.First(c => !c.RequestContext.Url.Contains("crafts"));
             if (null != context)
             {
+                CentralServer.Server.RequestLinkedList.Remove(context);
                 using (HttpListenerResponse response = context.HttpListenerResponse)
                 using (Stream output = response.OutputStream)
                 {

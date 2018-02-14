@@ -1,7 +1,9 @@
-﻿using System;
+﻿using JebNet.Domain;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using UnityEngine;
 
@@ -15,6 +17,10 @@ namespace JebNet.Server
         /// </summary>
         private const int NETWORK_PORT = 2001;
 
+        private static object _lock = new object();
+
+        private static List<VesselIdentity> _vesselIdentityList = new List<VesselIdentity>();
+
         public static Server Server { get; private set; }
 
         /*
@@ -23,7 +29,7 @@ namespace JebNet.Server
         void Awake()
         {
         }
-        
+
         /*
          * Called next.
          */
@@ -42,6 +48,59 @@ namespace JebNet.Server
          */
         void Update()
         {
+            Context context = CentralServer.Server.RequestLinkedList.First(c => c.RequestContext.Url.Contains("crafts"));
+            if (null != context)
+            {
+                CentralServer.Server.RequestLinkedList.Remove(context);
+                using (HttpListenerResponse response = context.HttpListenerResponse)
+                using (Stream output = response.OutputStream)
+                {
+
+                    try
+                    {
+                        log("Update: processing crafts context.");
+
+                        var vesselList = _vesselIdentityList.ToArray();
+                        foreach (var vessel in vesselList)
+                        {
+                            if (vessel == null)
+                            {
+                                log("NULL");
+                            }
+                            else
+                            {
+                                log($"Id {vessel.Id} Name {vessel.Name}");
+                            }
+                        }
+                        log($"Count: {vesselList.Count()}.");
+                        var jsonDebug = JsonUtility.ToJson(vesselList.FirstOrDefault());
+                        log("{0}", jsonDebug);
+
+                        var serialisedVessel = JsonHelper.arrayToJson<VesselIdentity>(vesselList);
+                        log("Update: Replying with '{0}'.", serialisedVessel);
+
+                        // Construct a response.
+                        byte[] buffer = Encoding.UTF8.GetBytes(serialisedVessel);
+                        response.ContentLength64 = buffer.Length;
+                        response.StatusCode = 200;
+
+                        output.Write(buffer, 0, buffer.Length);
+
+                        log("Update: processing context complete.");
+                    }
+                    catch (Exception ex)
+                    {
+                        log("Update: Exception caught.");
+                        log(ex.Message);
+                        log(ex.StackTrace);
+                        byte[] buffer = Encoding.UTF8.GetBytes(ex.Message);
+                        response.ContentLength64 = buffer.Length;
+                        response.StatusCode = 500;
+
+                        output.Write(buffer, 0, buffer.Length);
+                    }
+                }
+            }
         }
 
         /*
@@ -57,6 +116,22 @@ namespace JebNet.Server
         void OnDestroy()
         {
             log("OnDestroy");
+        }
+
+        public static void AddVesselIdentity(VesselIdentity vesselIdentity)
+        {
+            lock (_lock)
+            {
+                _vesselIdentityList.Add(vesselIdentity);
+            }
+        }
+
+        public static void RemoveVesselIdentity(VesselIdentity vesselIdentity)
+        {
+            lock (_lock)
+            {
+                _vesselIdentityList.Remove(vesselIdentity);
+            }
         }
 
 
