@@ -5,17 +5,23 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-namespace JebNet
+namespace JebNet.Server
 {
     [KSPAddon(KSPAddon.Startup.EveryScene, false)]
     public class CentralServer : MonoBehaviour
     {
+        /// <summary>
+        /// Port the server is listening on.
+        /// </summary>
+        private const int NETWORK_PORT = 2001;
+
+        public static Server Server { get; private set; }
+
         /*
          * Called after the scene is loaded.
          */
         void Awake()
         {
-            log("Awake");
         }
         
         /*
@@ -23,7 +29,12 @@ namespace JebNet
          */
         void Start()
         {
-            log("started");
+            if (null == Server)
+            {
+                log("Central server started");
+                Server = new Server(NETWORK_PORT);
+                Server.Start();
+            }
         }
 
         /*
@@ -31,7 +42,6 @@ namespace JebNet
          */
         void Update()
         {
-            log("Update");
         }
 
         /*
@@ -39,7 +49,6 @@ namespace JebNet
          */
         void FixedUpdate()
         {
-            log("FixedUpdate");
         }
 
         /*

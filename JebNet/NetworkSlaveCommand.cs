@@ -13,15 +13,8 @@ namespace JebNet.Server
 {
     public class NetworkSlaveCommand : PartModule
     {
-        /// <summary>
-        /// Port the vessel is listening on.
-        /// </summary>
-        private const int NETWORK_PORT = 2001;
 
-        /// <summary>
-        /// Server to get control messages.
-        /// </summary>
-        private Server server;
+        public string CraftId { get; private set; }
 
         /// <summary>
         /// Vessel mapper.
@@ -43,11 +36,7 @@ namespace JebNet.Server
 
             try
             {
-                log("Attempting to start server.");
-                server = new Server(NETWORK_PORT);
-                server.Start();
-
-                log("Server started.");
+                CraftId = Guid.NewGuid().ToString();
 
                 log("Attaching fly by wire callback.");
 
@@ -66,19 +55,14 @@ namespace JebNet.Server
             base.OnStart(state);
         }
 
-        
-
         public void OnDestroy()
         {
-            log("Network slave command on destroy.");
-            if (null != server)
-            {
-                server.Stop();
-            }
-
             log("Unattaching fly by wire callback.");
 
-            vessel.OnFlyByWire -= new FlightInputCallback(OnFlyByWire);
+            if (null != vessel)
+            {
+                vessel.OnFlyByWire -= new FlightInputCallback(OnFlyByWire);
+            }
 
             log("Completed unattaching fly by wire callback.");
         }
@@ -103,7 +87,7 @@ namespace JebNet.Server
         public void Update()
         {
             
-            Context context = server.FetchContext();
+            Context context = CentralServer.Server.FetchContext();
             if (null != context)
             {
                 using (HttpListenerResponse response = context.HttpListenerResponse)
