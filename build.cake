@@ -111,6 +111,24 @@ Task("Deploy")
     Information($"Copied plugin to '{targetJebNetPath}'.");
 });
 
+Task("RunKsp")
+    .IsDependentOn("Deploy")
+    .Does(() =>
+{
+    if (string.IsNullOrEmpty(kspPath) || !DirectoryExists(kspPath)) {
+        throw new Exception("kspPath must be set to a valid directory.");
+    }
+
+    string kspExePath = $"{kspPath}/KSP.exe";
+
+    if (!FileExists(kspExePath)) {
+        throw new Exception($"KSP.exe could not be found at this path: '{kspExePath}'.");
+    }
+    Information($"KSP.exe found at '{kspExePath}'.");
+    StartProcess(kspExePath, new ProcessSettings{ WorkingDirectory = kspPath });
+    Information($"KSP exited.");
+});
+
 
 
 //////////////////////////////////////////////////////////////////////
