@@ -53,12 +53,9 @@ namespace JebNet.Server
          */
         void Update()
         {
-            Context context = Server.RequestLinkedList.First(c => c.RequestContext.Url.Contains("crafts"));
-            if (null != context)
+            using (Context context = Server.FetchContext("crafts"))
             {
-                Server.RequestLinkedList.Remove(context);
-                using (HttpListenerResponse response = context.HttpListenerResponse)
-                using (Stream output = response.OutputStream)
+                if (null != context)
                 {
 
                     try
@@ -66,30 +63,10 @@ namespace JebNet.Server
                         Logger.Log("Update: processing crafts context.");
 
                         var vesselList = _vesselIdentityList.ToArray();
-                        foreach (var vessel in vesselList)
-                        {
-                            if (vessel == null)
-                            {
-                                Logger.Log("NULL");
-                            }
-                            else
-                            {
-                                Logger.Log($"Id {vessel.Id} Name {vessel.Name}");
-                            }
-                        }
-                        Logger.Log($"Count: {vesselList.Count()}.");
-                        var jsonDebug = JsonUtility.ToJson(vesselList.FirstOrDefault());
-                        Logger.Log("{0}", jsonDebug);
-
-                        var serialisedVessel = JsonHelper.arrayToJson<VesselIdentity>(vesselList);
+                        var serialisedVessel = JsonHelper.arrayToJson(vesselList);
                         Logger.Log("Update: Replying with '{0}'.", serialisedVessel);
 
-                        // Construct a response.
-                        byte[] buffer = Encoding.UTF8.GetBytes(serialisedVessel);
-                        response.ContentLength64 = buffer.Length;
-                        response.StatusCode = 200;
-
-                        output.Write(buffer, 0, buffer.Length);
+                        context.AddOutput(serialisedVessel);
 
                         Logger.Log("Update: processing context complete.");
                     }
@@ -98,11 +75,8 @@ namespace JebNet.Server
                         Logger.Log("Update: Exception caught.");
                         Logger.Log(ex.Message);
                         Logger.Log(ex.StackTrace);
-                        byte[] buffer = Encoding.UTF8.GetBytes(ex.Message);
-                        response.ContentLength64 = buffer.Length;
-                        response.StatusCode = 500;
-
-                        output.Write(buffer, 0, buffer.Length);
+                        context.AddOutput(ex.Message);
+                        context.ResponseCode = 500;
                     }
                 }
             }

@@ -96,21 +96,18 @@ namespace JebNet.Server
         public void Update()
         {
 
-            Context context = CentralServer.Server.RequestLinkedList.First(c => !c.RequestContext.Url.Contains("crafts"));
-            if (null != context)
+            using (Context context = CentralServer.Server.FetchContext(VesselIdentity.Id))
             {
-                CentralServer.Server.RequestLinkedList.Remove(context);
-                using (HttpListenerResponse response = context.HttpListenerResponse)
-                using (Stream output = response.OutputStream)
+                if (null != context)
                 {
 
                     try
                     {
                         Logger.Log("Update: processing context.");
-                        if (context.RequestContext.Method == "POST")
+                        if (context.ContextRequest.Method == "POST")
                         {
-                            Logger.Log("POST recieved: '{0}'", context.RequestContext.Body);
-                            var requestControlState = JsonUtility.FromJson<ControlState>(context.RequestContext.Body);
+                            Logger.Log("POST recieved: '{0}'", context.ContextRequest.Body);
+                            var requestControlState = JsonUtility.FromJson<ControlState>(context.ContextRequest.Body);
                             Logger.Log("Map complete.");
 
                             controlState = requestControlState;
@@ -121,12 +118,7 @@ namespace JebNet.Server
                         var serialisedVessel = JsonUtility.ToJson(domainVessel);
                         Logger.Log("Update: Replying with '{0}'.", serialisedVessel);
 
-                        // Construct a response.
-                        byte[] buffer = Encoding.UTF8.GetBytes(serialisedVessel);
-                        response.ContentLength64 = buffer.Length;
-                        response.StatusCode = 200;
-
-                        output.Write(buffer, 0, buffer.Length);
+                        context.AddOutput(serialisedVessel);
 
                         Logger.Log("Update: processing context complete.");
                     }
@@ -135,11 +127,8 @@ namespace JebNet.Server
                         Logger.Log("Update: Exception caught.");
                         Logger.Log(ex.Message);
                         Logger.Log(ex.StackTrace);
-                        byte[] buffer = Encoding.UTF8.GetBytes(ex.Message);
-                        response.ContentLength64 = buffer.Length;
-                        response.StatusCode = 500;
-
-                        output.Write(buffer, 0, buffer.Length);
+                        context.AddOutput(ex.Message);
+                        context.ResponseCode = 500;
                     }
                 }
             }
@@ -152,7 +141,7 @@ namespace JebNet.Server
 
         private void OnFlyByWire(FlightCtrlState vesselFlightControlState)
         {
-            vesselFlightControlState.gearDown= controlState.GearDown;
+            vesselFlightControlState.gearDown = controlState.GearDown;
             vesselFlightControlState.gearUp = controlState.GearUp;
             vesselFlightControlState.headlight = controlState.HeadLight;
             vesselFlightControlState.mainThrottle = controlState.MainThrottle;

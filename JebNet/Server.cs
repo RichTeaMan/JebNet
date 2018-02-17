@@ -24,7 +24,7 @@ namespace JebNet.Server
 
         private object requestStackLock = new object();
 
-        public LinkedList<Context> RequestLinkedList { get; private set; } = new LinkedList<Context>();
+        private LinkedList<Context> RequestLinkedList = new LinkedList<Context>();
 
         /// <summary>
         /// The HTTP listener.
@@ -91,6 +91,18 @@ namespace JebNet.Server
         }
 
         /// <summary>
+        /// Removes a context to the internal stack. This method is thread safe.
+        /// </summary>
+        /// <param name="context"></param>
+        public void RemoveContext(Context context)
+        {
+            lock (requestStackLock)
+            {
+                RequestLinkedList.Remove(context);
+            }
+        }
+
+        /// <summary>
         /// Fetches and removes the context from the internal stack. This method is thread safe.
         /// 
         /// The caller is expected to deal with the context and close any streams for the connection can be completed.
@@ -98,16 +110,19 @@ namespace JebNet.Server
         /// Returns null if there are no contexts in the stack.
         /// </summary>
         /// <returns></returns>
-        [Obsolete]
-        public Context FetchContext()
+        public Context FetchContext(string pathContains)
         {
             Context context = null;
             lock (requestStackLock)
             {
-                if (RequestLinkedList.Count > 0)
+                foreach(var requestContext in RequestLinkedList)
                 {
-                    context = RequestLinkedList.First.Value;
-                    RequestLinkedList.RemoveFirst();
+                    if (requestContext.ContextRequest.Url.Contains(pathContains))
+                    {
+                        context = requestContext;
+                        Logger.Log($"Context requested: {context.ContextRequest.Url}");
+                        break;
+                    }
                 }
             }
             return context;
@@ -139,8 +154,6 @@ namespace JebNet.Server
                 // Call EndGetContext to complete the asynchronous operation.
                 HttpListenerContext httpListenerContext = listener.EndGetContext(result);
                 HttpListenerRequest request = httpListenerContext.Request;
-
-                // Obtain a response object.
                 HttpListenerResponse response = httpListenerContext.Response;
 
                 string body = null;
@@ -151,9 +164,9 @@ namespace JebNet.Server
 
                 ContextRequest contextRequest = new ContextRequest(request.HttpMethod, body, request.RawUrl);
 
-                Context context = new Context();
-                context.RequestContext = contextRequest;
-                context.HttpListenerResponse = response;
+                Context context = new Context(contextRequest, response, server);
+
+                Logger.Log($"Request received: {context.ContextRequest.Url}");
 
                 server.AddContext(context);
             }
