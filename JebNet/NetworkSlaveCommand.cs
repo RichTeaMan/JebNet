@@ -110,7 +110,7 @@ namespace JebNet.Server
                         if (context.RequestContext.Method == "POST")
                         {
                             Logger.Log("POST recieved: '{0}'", context.RequestContext.Body);
-                            var requestControlState = JsonUtility.FromJson<Domain.ControlState>(context.RequestContext.Body);
+                            var requestControlState = JsonUtility.FromJson<ControlState>(context.RequestContext.Body);
                             Logger.Log("Map complete.");
 
                             controlState = requestControlState;

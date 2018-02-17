@@ -13,6 +13,11 @@ namespace JebNet.Server
     public class Server
     {
         /// <summary>
+        /// Logger.
+        /// </summary>
+        private static JebLogger Logger = new JebLogger(typeof(CentralServer));
+
+        /// <summary>
         /// Port the server is listening on.
         /// </summary>
         public int Port { get; private set; }
@@ -44,21 +49,19 @@ namespace JebNet.Server
             {
                 try
                 {
-                    log("Attempting to start server on port {0}.", Port);
+                    Logger.Log("Attempting to start server on port {0}.", Port);
                     HttpListener = new HttpListener();
                     HttpListener.Prefixes.Add(string.Format("http://localhost:{0}/", Port));
                     HttpListener.Start();
                     HttpListener.BeginGetContext(new AsyncCallback(ListenerCallback), this);
 
-
-                    log("Server started.");
-
+                    Logger.Log("Server started.");
                 }
                 catch (Exception ex)
                 {
-                    log("Failed to start server.");
-                    log(ex.Message);
-                    log(ex.StackTrace);
+                    Logger.Log("Failed to start server.");
+                    Logger.Log(ex.Message);
+                    Logger.Log(ex.StackTrace);
                 }
             }
         }
@@ -68,7 +71,7 @@ namespace JebNet.Server
         /// </summary>
         public void Stop()
         {
-            log("Stopping server.");
+            Logger.Log("Stopping server.");
             if (null != HttpListener)
             {
                 HttpListener.Stop();
@@ -128,7 +131,7 @@ namespace JebNet.Server
         /// <param name="result"></param>
         private static void ListenerCallback(IAsyncResult result)
         {
-            log("Begin listener callback.");
+            Logger.Log("Begin listener callback.");
             Server server = (Server)result.AsyncState;
             HttpListener listener = server.HttpListener;
             try
@@ -158,25 +161,8 @@ namespace JebNet.Server
             {
                 listener.BeginGetContext(new AsyncCallback(ListenerCallback), server);
             }
-            log("Complete listener callback.");
+            Logger.Log("Complete listener callback.");
 
-        }
-
-        /// <summary>
-        /// Logs.
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="args"></param>
-        private static void log(string message, params object[] args)
-        {
-            string resolvedMessage = string.Format(message, args);
-
-            string datedResolvedMessage = string.Format("[{0}] - {1}", DateTime.Now, resolvedMessage);
-
-            using (StreamWriter file = new StreamWriter(@"JebNetLog.txt", true))
-            {
-                file.WriteLine(datedResolvedMessage);
-            }
         }
 
     }

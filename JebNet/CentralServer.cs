@@ -53,10 +53,10 @@ namespace JebNet.Server
          */
         void Update()
         {
-            Context context = CentralServer.Server.RequestLinkedList.First(c => c.RequestContext.Url.Contains("crafts"));
+            Context context = Server.RequestLinkedList.First(c => c.RequestContext.Url.Contains("crafts"));
             if (null != context)
             {
-                CentralServer.Server.RequestLinkedList.Remove(context);
+                Server.RequestLinkedList.Remove(context);
                 using (HttpListenerResponse response = context.HttpListenerResponse)
                 using (Stream output = response.OutputStream)
                 {
