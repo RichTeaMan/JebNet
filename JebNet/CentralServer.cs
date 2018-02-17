@@ -13,6 +13,11 @@ namespace JebNet.Server
     public class CentralServer : MonoBehaviour
     {
         /// <summary>
+        /// Logger.
+        /// </summary>
+        private static JebLogger Logger = new JebLogger(typeof(CentralServer));
+
+        /// <summary>
         /// Port the server is listening on.
         /// </summary>
         private const int NETWORK_PORT = 2001;
@@ -37,7 +42,7 @@ namespace JebNet.Server
         {
             if (null == Server)
             {
-                log("Central server started");
+                Logger.Log("Central server started");
                 Server = new Server(NETWORK_PORT);
                 Server.Start();
             }
@@ -58,26 +63,26 @@ namespace JebNet.Server
 
                     try
                     {
-                        log("Update: processing crafts context.");
+                        Logger.Log("Update: processing crafts context.");
 
                         var vesselList = _vesselIdentityList.ToArray();
                         foreach (var vessel in vesselList)
                         {
                             if (vessel == null)
                             {
-                                log("NULL");
+                                Logger.Log("NULL");
                             }
                             else
                             {
-                                log($"Id {vessel.Id} Name {vessel.Name}");
+                                Logger.Log($"Id {vessel.Id} Name {vessel.Name}");
                             }
                         }
-                        log($"Count: {vesselList.Count()}.");
+                        Logger.Log($"Count: {vesselList.Count()}.");
                         var jsonDebug = JsonUtility.ToJson(vesselList.FirstOrDefault());
-                        log("{0}", jsonDebug);
+                        Logger.Log("{0}", jsonDebug);
 
                         var serialisedVessel = JsonHelper.arrayToJson<VesselIdentity>(vesselList);
-                        log("Update: Replying with '{0}'.", serialisedVessel);
+                        Logger.Log("Update: Replying with '{0}'.", serialisedVessel);
 
                         // Construct a response.
                         byte[] buffer = Encoding.UTF8.GetBytes(serialisedVessel);
@@ -86,13 +91,13 @@ namespace JebNet.Server
 
                         output.Write(buffer, 0, buffer.Length);
 
-                        log("Update: processing context complete.");
+                        Logger.Log("Update: processing context complete.");
                     }
                     catch (Exception ex)
                     {
-                        log("Update: Exception caught.");
-                        log(ex.Message);
-                        log(ex.StackTrace);
+                        Logger.Log("Update: Exception caught.");
+                        Logger.Log(ex.Message);
+                        Logger.Log(ex.StackTrace);
                         byte[] buffer = Encoding.UTF8.GetBytes(ex.Message);
                         response.ContentLength64 = buffer.Length;
                         response.StatusCode = 500;
@@ -115,7 +120,7 @@ namespace JebNet.Server
          */
         void OnDestroy()
         {
-            log("OnDestroy");
+            Logger.Log("OnDestroy");
         }
 
         public static void AddVesselIdentity(VesselIdentity vesselIdentity)
@@ -131,24 +136,6 @@ namespace JebNet.Server
             lock (_lock)
             {
                 _vesselIdentityList.Remove(vesselIdentity);
-            }
-        }
-
-
-        /// <summary>
-        /// Logs.
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="args"></param>
-        private static void log(string message, params object[] args)
-        {
-            string resolvedMessage = string.Format(message, args);
-
-            string datedResolvedMessage = string.Format("[{0}] - {1}", DateTime.Now, resolvedMessage);
-
-            using (StreamWriter file = new StreamWriter(@"JebNetLogMono.txt", true))
-            {
-                file.WriteLine(datedResolvedMessage);
             }
         }
     }

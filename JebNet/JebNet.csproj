@@ -52,6 +52,7 @@
     <Compile Include="NetworkSlaveCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ContextRequest.cs" />
+    <Compile Include="JebLogger.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Service\" />
